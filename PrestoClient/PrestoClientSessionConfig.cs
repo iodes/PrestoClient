@@ -88,6 +88,11 @@ namespace BAMCIS.PrestoClient
         }
 
         /// <summary>
+        /// The password of the user connecting to presto.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         /// The catalog to use for interaction with presto.
         /// </summary>
         public string Catalog { get; set; }

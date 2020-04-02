@@ -895,6 +895,12 @@ namespace BAMCIS.PrestoClient
                 return false;
             }
 
+            if (!String.IsNullOrEmpty(this.Configuration.Password) && !this.Configuration.UseSsl)
+            {
+                ex = new ArgumentNullException("password", "Password can only be used while SSL is being used.");
+                return false;
+            }
+
             if (String.IsNullOrEmpty(this.Configuration.Catalog) && !String.IsNullOrEmpty(this.Configuration.Schema))
             {
                 ex = new ArgumentException("The Schema cannot be set without setting the catalog.");
@@ -1069,6 +1075,13 @@ namespace BAMCIS.PrestoClient
             if (!String.IsNullOrEmpty(this.Configuration.User))
             {
                 Request.Headers.Add(PrestoHeader.PRESTO_USER.Value, this.Configuration.User);
+            }
+
+            if (!String.IsNullOrEmpty(this.Configuration.Password))
+            {
+                var authString = $"{this.Configuration.User}:{this.Configuration.Password}";
+                var base64AuthString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authString));
+                Request.Headers.Add("Authorization", "Basic " + base64AuthString);
             }
 
             return Request;
